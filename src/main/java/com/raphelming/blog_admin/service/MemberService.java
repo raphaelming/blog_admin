@@ -5,6 +5,7 @@ import com.raphelming.blog_admin.domain.Member;
 import com.raphelming.blog_admin.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +17,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     public Long join(Member member) {
         validateDuplicateMember(member);
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         member.setRole(1);
         memberRepository.save(member);
